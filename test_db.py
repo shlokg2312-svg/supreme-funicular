@@ -12,12 +12,16 @@ try:
         password=password,
     ) as conn:
         with conn.cursor() as cursor:
-            cursor.execute(
-                "SELECT name, company FROM clients ORDER BY name;"
-            )
+            cursor.execute("""
+                SELECT p.project_name, c.company
+                FROM projects p
+                JOIN clients c
+                    ON p.client_id = c.client_id
+                WHERE p.status = 'Active';
+            """)
 
-            for name, company in cursor.fetchall():
-                print(f"{name} — {company}")
+            for project_name, company in cursor.fetchall():
+                print(f"{project_name} — {company}")
 
     print("\nDatabase connection successful!")
 
